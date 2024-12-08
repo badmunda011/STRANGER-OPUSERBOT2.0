@@ -53,11 +53,10 @@ async_dirs()
     
 
 app = Client(
-    name="Assistant",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    session_string=STRING_SESSION,  # Ensure STRING_SESSION is valid and properly generated
-    plugins=dict(root="SHUKLA.plugins")  # Plugins shared with bot
+    name = "SHUKLA",
+    api_id = API_ID,
+    api_hash = API_HASH,
+    session_string = STRING_SESSION,
 )
 
 ass = Client(
@@ -68,12 +67,10 @@ ass = Client(
 )
 
 bot = Client(
-    name="Bot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
-    plugins=dict(root="SHUKLA.plugins")  # Ensure the plugins folder is structured correctly
-)
+    name = "ShuklaSUPPORT",
+    api_id = API_ID,
+    api_hash = API_HASH,
+    bot_token = BOT_TO
 
 call = PyTgCalls(app)
 
