@@ -1,5 +1,8 @@
+from typing import Union, List, Pattern
 from SHUKLA.console import  SUDO_USERS, OWNER_ID, OWNER_USERNAME
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
+from pytgcalls import PyTgCalls, filters as pytgfl
+
 
 # Ai-Userbot Version
 __version__ = "v2.1.0"
@@ -8,6 +11,23 @@ spam_chats = []
 SUDO_USER = SUDO_USERS
 OWNER_USERNAME = OWNER_USERNAME
 SUDO_USERS.append(OWNER_ID)
+
+
+# Command filters for bot and app
+def cdx(commands: Union[str, List[str]]):
+    """Filter commands starting with /, !, or ."""
+    return pyrofl.command(commands, prefixes=["/", "!", "."])
+
+
+def cdz(commands: Union[str, List[str]]):
+    """Filter commands starting with no prefix or /, !, ."""
+    return pyrofl.command(commands, prefixes=["", "/", "!", "."])
+
+
+def rgx(pattern: Union[str, Pattern]):
+    """Filter messages matching a regex pattern."""
+    return pyrofl.regex(pattern)
+
 
 from SHUKLA.console import *
 
