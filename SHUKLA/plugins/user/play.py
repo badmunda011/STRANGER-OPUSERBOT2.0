@@ -3,6 +3,7 @@ import os, platform, random, re, socket
 import sys, time, textwrap
 from ... import *
 from SHUKLA import bot, app, call
+from SHUKLA.plugins.user.play import *
 from SHUKLA import *
 from os import getenv
 from io import BytesIO
