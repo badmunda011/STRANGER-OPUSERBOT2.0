@@ -2,7 +2,9 @@ import os, sys
 
 from pyrogram import Client
 from pyrogram import filters
-from pytgcalls import PyTgCalls
+from pytgcalls import PyTgCalls, filters as pytgfl
+from pytgcalls.types import ChatUpdate, Update, GroupCallConfig
+from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from ...console import API_ID, API_HASH, STRING_SESSION
