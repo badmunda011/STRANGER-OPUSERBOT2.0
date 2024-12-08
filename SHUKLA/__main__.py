@@ -28,7 +28,7 @@ from pytgcalls.__version__ import __version__ as pytgcalls_version
 from pyrogram import __version__ as pyrogram_version
 from os import getenv
 
-from SHUKLA import console
+from SHUKLA.console import LOG_GROUP_ID
 from . import logs, plugs, vars
 from .plugins import ALL_PLUGINS
 from .modules.clients.clients import run_async_clients
