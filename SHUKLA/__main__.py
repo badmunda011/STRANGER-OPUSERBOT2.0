@@ -22,8 +22,8 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from dotenv import load_dotenv
 from platform import python_version
 
-from CakeMusic.version import __version__ as version
-from CakeMusic import app, bot, call
+from SHUKLA import __version__ as version
+from SHUKLA import app, bot, call
 from pytgcalls.__version__ import __version__ as pytgcalls_version
 from pyrogram import __version__ as pyrogram_version
 from os import getenv
