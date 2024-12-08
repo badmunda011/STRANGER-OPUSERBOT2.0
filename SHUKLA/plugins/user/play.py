@@ -46,6 +46,9 @@ from PIL import Image, ImageDraw, ImageEnhance
 from PIL import ImageFilter, ImageFont, ImageOps
 from youtubesearchpython.__future__ import VideosSearch
 
+call = PyTgCalls(app)
+call_config = GroupCallConfig(auto_start=False)
+
 # Memory Database
 
 ACTIVE_AUDIO_CHATS = []
