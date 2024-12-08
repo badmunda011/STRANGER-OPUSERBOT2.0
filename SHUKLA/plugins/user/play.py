@@ -2,6 +2,7 @@ import aiohttp, aiofiles, asyncio, base64, logging
 import os, platform, random, re, socket
 import sys, time, textwrap
 from ... import *
+from . import *
 from SHUKLA import bot, app, call
 from SHUKLA.plugins.user.play import *
 from SHUKLA import *
