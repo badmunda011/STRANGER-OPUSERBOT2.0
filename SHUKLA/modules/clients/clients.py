@@ -70,7 +70,7 @@ bot = Client(
     name = "ShuklaSUPPORT",
     api_id = API_ID,
     api_hash = API_HASH,
-    bot_token = BOT_TO
+    bot_token = BOT_TOKEN,
 )
 
 call = PyTgCalls(app)
