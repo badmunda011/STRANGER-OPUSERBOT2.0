@@ -32,7 +32,7 @@ API_ID = int(getenv("API_ID", 25742938))
 API_HASH = getenv("API_HASH", b35b715fe8dc0a58e8048988286fc5b6)
 BOT_TOKEN = getenv("BOT_TOKEN", 7454086236:AAEY9IfwBZqV5KTvWkqYS_GGLa6SdKcCCAc)
 STRING_SESSION = getenv("STRING_SESSION", None)
-MONGO_DB_URL = mongodb+srv://hnyx:wywyw2@cluster0.9dxlslv.mongodb.net/?retryWrites=true&w=majority
+MONGO_DB_URL ="mongodb+srv://hnyx:wywyw2@cluster0.9dxlslv.mongodb.net/?retryWrites=true&w=majority"
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", -1002356967761))
 OWNER_ID = int(getenv("OWNER_ID", "7009601543"))
 OWNER_USERNAME = getenv("OWNER_USERNAME", bad)
