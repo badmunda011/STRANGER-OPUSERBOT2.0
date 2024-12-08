@@ -841,6 +841,127 @@ async def stream_audio_or_video(client, message):
             LOGGER.info(f"🚫 Stream Error: {e}")
             return
 
+@app.on_message(cdx(["pause", "vpause"]) & ~pyrofl.private)
+async def pause_running_stream_on_vc(client, message):
+    chat_id = message.chat.id
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    try:
+        call_status = await get_call_status(chat_id)
+        if call_status == "IDLE" or call_status == "NOTHING":
+            return await message.reply_text("**❎ Nothing Streaming❗**")
+
+        elif call_status == "PAUSED":
+            return await message.reply_text("**🔈 Already Paused❗**")
+        elif call_status == "PLAYING":
+            await call.pause_stream(chat_id)
+            return await message.reply_text("**🔈 Stream Paused❗**")
+        else:
+            return
+    except Exception as e:
+        try:
+            await app.send_message(chat_id, f"**🚫 Stream Pause Error:** `{e}`")
+        except Exception:
+            LOGGER.info(f"🚫 Stream Pause Error: {e}")
+            return
+
+
+@app.on_message(cdx(["resume", "vresume"]) & ~pyrofl.private)
+async def resume_paused_stream_on_vc(client, message):
+    chat_id = message.chat.id
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    try:
+        call_status = await get_call_status(chat_id)
+        if call_status == "IDLE" or call_status == "NOTHING":
+            return await message.reply_text("**❎ Nothing Streaming❗**")
+
+        elif call_status == "PLAYING":
+            return await message.reply_text("**🔊 Already Streaming❗**")
+        elif call_status == "PAUSED":
+            await call.resume_stream(chat_id)
+            return await message.reply_text("**🔊 Stream Resumed❗**")
+        else:
+            return
+    except Exception as e:
+        try:
+            await app.send_message(chat_id, f"**🚫 Stream Resume Error:** `{e}`")
+        except Exception:
+            LOGGER.info(f"🚫 Stream Resume Error: {e}")
+            return
+
+
+@app.on_message(cdx(["skip", "vskip"]) & ~pyrofl.private)
+async def skip_and_change_stream(client, message):
+    chat_id = message.chat.id
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    try:
+        call_status = await get_call_status(chat_id)
+        if call_status == "IDLE" or call_status == "NOTHING":
+            return await app.send_message(chat_id, "**❎ Nothing Streaming❗...**")
+        elif call_status == "PLAYING" or call_status == "PAUSED":
+            stickers = [
+                "🌹",
+                "🌺",
+                "🎉",
+                "🎃",
+                "💥",
+                "🦋",
+                "🕊️",
+                "❤️",
+                "💖",
+                "💝",
+                "💗",
+                "💓",
+                "💘",
+                "💞",
+            ]
+            aux = await message.reply_text(random.choice(stickers))
+            await change_stream(chat_id)
+            try:
+                await aux.delete()
+            except Exception:
+                pass
+    except Exception as e:
+        try:
+            await app.send_message(chat_id, f"**🚫 Skip Error:** `{e}`")
+        except Exception:
+            LOGGER.info(f"🚫 Skip Error: {e}")
+            return
+
+
+@app.on_message(cdx(["end", "vend"]) & ~pyrofl.private)
+async def stop_stream_and_leave_vc(client, message):
+    chat_id = message.chat.id
+    try:
+        await message.delete()
+    except Exception:
+        pass
+    try:
+        call_status = await get_call_status(chat_id)
+        if call_status == "NOTHING":
+            return await message.reply_text("**❎ Nothing Streaming❗**")
+        elif call_status == "IDLE":
+            return await message.reply_text("**✅ Succesfully Left From VC❗**")
+        elif call_status == "PLAYING" or call_status == "PAUSED":
+            await close_stream(chat_id)
+            return await message.reply_text("**❎ Stopped Stream & Left\nFrom VC❗...**")
+        else:
+            return
+    except Exception as e:
+        try:
+            await app.send_message(chat_id, f"**🚫 Stream End Error:** `{e}`")
+        except Exception:
+            LOGGER.info(f"🚫 Stream End Error: {e}")
+            return
+
 
 
 
