@@ -1,4 +1,3 @@
-from ... import app
 from typing import Union, List, Pattern
 from SHUKLA.console import  SUDO_USERS, OWNER_ID, OWNER_USERNAME
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
