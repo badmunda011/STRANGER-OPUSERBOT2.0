@@ -8,7 +8,6 @@ pymongo
 python-dotenv==1.0.1
 py-tgcalls==2.1.0.dev2
 tgcrypto==1.2.5
-yt-dlp==2023.12.30
 telegraph
 pillow==9.5.0
 Unidecode
