@@ -3,7 +3,6 @@ aiohttp==3.10.3
 asyncio==3.4.3
 motor==3.6.0
 ntgcalls==1.3.0b3
-pyrogram==2.0.106
 pymongo
 python-dotenv==1.0.1
 py-tgcalls==2.1.0.dev2
@@ -11,8 +10,6 @@ tgcrypto==1.2.5
 telegraph
 pillow==9.5.0
 Unidecode
-git+https://github.com/badmunda98/py-trans.git
-git+https://github.com/badmunda98/pyrofork
 aiohttp
 gtts
 wget
@@ -29,3 +26,4 @@ humanize
 requests==2.31.0
 sqlalchemy==1.3.23
 SafoneAPI
+git+https://github.com/PyrogramMod/PyrogramMod.git
