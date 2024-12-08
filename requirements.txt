@@ -12,11 +12,12 @@ pillow==9.5.0
 Unidecode
 aiohttp
 gtts
+httpx==0.25.0
 wget
 gpytranslate
 yt-dlp==2024.11.18
 youtube-search-python
-youtube-search==2.1.2
+youtube-search
 pyfiglet
 pydub
 pymediainfo
