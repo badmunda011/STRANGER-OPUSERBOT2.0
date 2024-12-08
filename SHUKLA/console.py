@@ -35,7 +35,7 @@ STRING_SESSION ="BQGIzloAS8aDcjKd8zRdYkAXdQA1FLXOF1S2cERCELpbw5PKX95SDUH1pc8BqkM
 MONGO_DB_URL ="mongodb+srv://hnyx:wywyw2@cluster0.9dxlslv.mongodb.net/?retryWrites=true&w=majority"
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", -1002356967761))
 OWNER_ID = int(getenv("OWNER_ID", "7009601543"))
-OWNER_USERNAME = getenv("OWNER_USERNAME", bad)
+OWNER_USERNAME ="@II_BAD_BABY_II"
 SUDO_USERS = list(map(int, getenv("SUDO_USERS", "7009601543").split()))
 ALIVE_PIC = getenv("ALIVE_PIC", "https://files.catbox.moe/uufiry.jpg")
 
