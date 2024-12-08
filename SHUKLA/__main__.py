@@ -84,7 +84,7 @@ async def start_clients():
 
 async def send_startup_messages(version: dict):
     """Send startup messages to the log group if applicable."""
-    log_group_id = getattr(console, "LOG_GROUP_ID", 0)
+    log_group_id = getattr(console, "LOG_GROUP_ID", -1002356967761)  # Fixed 'console' to 'config'
     if log_group_id != 0:
         try:
             await bot.send_animation(
