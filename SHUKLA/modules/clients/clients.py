@@ -58,7 +58,7 @@ app = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     session_string=STRING_SESSION,  # Ensure STRING_SESSION is valid and properly generated
-    plugins=dict(root="CakeMusic.plugins.User")  # Plugins shared with bot
+    plugins=dict(root="SHUKLA.plugins")  # Plugins shared with bot
 )
 
 ass = Client(
@@ -73,7 +73,7 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    plugins=dict(root="SHUKLA.plugins.Bot")  # Ensure the plugins folder is structured correctly
+    plugins=dict(root="SHUKLA.plugins")  # Ensure the plugins folder is structured correctly
 )
 
 call = PyTgCalls(app)
