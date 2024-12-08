@@ -12,6 +12,9 @@ SUDO_USER = SUDO_USERS
 OWNER_USERNAME = OWNER_USERNAME
 SUDO_USERS.append(OWNER_ID)
 
+#py-tgcalls
+call = PyTgCalls(app)
+call_config = GroupCallConfig(auto_start=False)
 
 # Command filters for bot and app
 def cdx(commands: Union[str, List[str]]):
