@@ -9,6 +9,10 @@ SUDO_USER = SUDO_USERS
 OWNER_USERNAME = OWNER_USERNAME
 SUDO_USERS.append(OWNER_ID)
 
+from SHUKLA.console import *
+
+mongo_async_cli = _mongo_async_(console.MONGO_DB_URL)
+mongodb = mongo_async_cli.badmundaxdb
 
 # All Clients
 from .modules.clients.clients import (
