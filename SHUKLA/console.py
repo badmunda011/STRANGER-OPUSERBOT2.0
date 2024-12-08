@@ -6,22 +6,22 @@ from os import getenv
 from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
 
-
+# Setup Logging
 logging.basicConfig(
-    format="[%(asctime)s]:[%(levelname)s]:[%(name)s]:: %(message)s",
+    format="[%(name)s]:: %(message)s",
     level=logging.INFO,
     datefmt="%H:%M:%S",
     handlers=[
-        RotatingFileHandler(
-            "logs.txt", maxBytes=(1024 * 1024 * 5), backupCount=10
-        ),
+        RotatingFileHandler("logs.txt", maxBytes=(1024 * 1024 * 5), backupCount=10),
         logging.StreamHandler(),
     ],
 )
 
-logging.getLogger("httpx").setLevel(logging.ERROR)
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-logging.getLogger("pytgcalls").setLevel(logging.ERROR)
+# Suppress noisy loggers
+for module in ["apscheduler", "asyncio", "httpx", "pyrogram", "pytgcalls"]:
+    logging.getLogger(module).setLevel(logging.ERROR)
+
+LOGGER = logging.getLogger("SYSTEM")
 
 
 if os.path.exists("Internal"):
