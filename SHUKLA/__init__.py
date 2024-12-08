@@ -1,5 +1,5 @@
 from SHUKLA.console import  SUDO_USERS, OWNER_ID, OWNER_USERNAME
-from aiohttp import ClientSession
+from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 
 # Ai-Userbot Version
 __version__ = "v2.1.0"
