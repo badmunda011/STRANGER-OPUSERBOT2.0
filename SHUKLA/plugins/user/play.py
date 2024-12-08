@@ -5,6 +5,7 @@ from ... import *
 from SHUKLA import bot, app, call
 from SHUKLA.plugins.user.play import *
 from SHUKLA import *
+from SHUKLA.modules.clients import *
 from os import getenv
 from io import BytesIO
 from time import strftime
