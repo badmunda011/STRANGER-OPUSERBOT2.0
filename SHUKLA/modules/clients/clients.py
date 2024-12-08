@@ -72,11 +72,8 @@ bot = Client(
     bot_token = BOT_TOKEN,
 )
 
-
-if not SESSION_STRING:
-    call = PyTgCalls(app)
-else:
-    call = PyTgCalls(ass)
+call = PyTgCalls(app)
+call_config = GroupCallConfig(auto_start=False)
 
 
 def mongodbase():
