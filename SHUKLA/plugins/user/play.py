@@ -622,7 +622,11 @@ async def stream_audio_or_video(client, message):
         url = f"https://www.youtube.com/watch?v={vidid}" if vidid else None
         search_query = url if url else query
         results = VideosSearch(search_query, limit=1)
-        for result in (await results.next())["result"]:
+        for result = await results.next()
+        if "result" in result:
+            for item in result["result"]:
+        else:
+            raise KeyError("Key 'result' not found in the returned object")
             vid_id = vidid if vidid else result["id"]
             vid_url = url if url else result["link"]
             try:
