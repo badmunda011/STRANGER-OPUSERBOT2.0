@@ -1,95 +1,71 @@
-import os, sys
-
+import os
+import sys
 from pyrogram import Client
 from pyrogram import filters
+from telethon import TelegramClient
+from telethon.tl.functions.messages import SendMessageRequest
 from pytgcalls import PyTgCalls, filters as pytgfl
 from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from ...console import API_ID, API_HASH, STRING_SESSION
-from ...console import BOT_TOKEN, SESSION_STRING, LOGGER
-from ...console import MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
+from ...console import (
+    API_ID, API_HASH, STRING_SESSION, BOT_TOKEN, SESSION_STRING, LOGGER,
+    MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
+)
 
-#telethone session 
-
-
-from telethon import TelegramClient
-from telethon.tl.custom import Button
-from telethon.tl.types import InputPeerUser
-
-# API credentials from https://my.telegram.org/auth
-api_id = '25742938'
-api_hash = 'b35b715fe8dc0a58e8048988286fc5b6'
-bot_token = '7454086236:AAEY9IfwBZqV5KTvWkqYS_GGLa6SdKcCCAc'
-
-# Create the client and connect
-client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
-
-client.start()
-client.run_until_disconnected()
-
-#end 
 
 def async_config():
     LOGGER.info("Checking Variables ...")
-    if not API_ID:
-        LOGGER.info("'API_ID' - Not Found !")
-        sys.exit()
-    if not API_HASH:
-        LOGGER.info("'API_HASH' - Not Found !")
-        sys.exit()
-    if not BOT_TOKEN:
-        LOGGER.info("'BOT_TOKEN' - Not Found !")
-        sys.exit()
-    if not STRING_SESSION:
-        LOGGER.info("'STRING_SESSION' - Not Found !")
-        sys.exit()
-    if not MONGO_DB_URL:
-        LOGGER.info("'MONGO_DB_URL' - Not Found !")
-        sys.exit()
-    if not LOG_GROUP_ID:
-        LOGGER.info("'LOG_GROUP_ID' - Not Found !")
+    required_vars = [API_ID, API_HASH, BOT_TOKEN, STRING_SESSION, MONGO_DB_URL, LOG_GROUP_ID]
+    if not all(required_vars):
+        missing = [var for var in ["API_ID", "API_HASH", "BOT_TOKEN", "STRING_SESSION", "MONGO_DB_URL", "LOG_GROUP_ID"] 
+                   if not eval(var)]
+        LOGGER.info(f"Missing required variables: {', '.join(missing)}")
         sys.exit()
     LOGGER.info("All Required Variables Collected.")
 
 
 def async_dirs():
     LOGGER.info("Initializing Directories ...")
-    if "downloads" not in os.listdir():
-        os.mkdir("downloads")
-    if "cache" not in os.listdir():
-        os.mkdir("cache")
-    
+    for folder in ["downloads", "cache"]:
+        if folder not in os.listdir():
+            os.mkdir(folder)
     for file in os.listdir():
-        if file.endswith(".session"):
-            os.remove(file)
-    for file in os.listdir():
-        if file.endswith(".session-journal"):
+        if file.endswith((".session", ".session-journal")):
             os.remove(file)
     LOGGER.info("Directories Initialized.")
 
 async_dirs()
-    
 
+# Pyrogram Client Instances
 app = Client(
-    name = "SHUKLA",
-    api_id = API_ID,
-    api_hash = API_HASH,
-    session_string = STRING_SESSION,
+    name="Assistant",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    session_string=STRING_SESSION,
+    plugins=dict(root="SHUKLA.plugins")
 )
 
 ass = Client(
-    name = "ShuklaPlayer",
-    api_id = API_ID,
-    api_hash = API_HASH,
-    session_string = SESSION_STRING,
+    name="ShuklaPlayer",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    session_string=SESSION_STRING,
 )
 
 bot = Client(
-    name = "ShuklaSUPPORT",
-    api_id = API_ID,
-    api_hash = API_HASH,
-    bot_token = BOT_TOKEN,
+    name="Bot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN,
+)
+
+# Telethon Client
+telethon_client = TelegramClient(
+    "TelethonClient",
+    API_ID,
+    API_HASH,
+    session=SESSION_STRING
 )
 
 call = PyTgCalls(app)
@@ -102,9 +78,9 @@ def mongodbase():
         async_client = AsyncIOMotorClient
         mongobase = async_client(MONGO_DB_URL)
         mongodb = mongobase.SHUKLA
-        LOGGER.info("Conected To Your Database.")
-    except:
-        LOGGER.error("Failed To Connect, Please Change Your Mongo Database !")
+        LOGGER.info("Connected To Your Database.")
+    except Exception as e:
+        LOGGER.error(f"Failed To Connect, Error: {e}")
         sys.exit()
 
 mongodbase()
@@ -117,20 +93,23 @@ async def sudo_users():
     if sudoers:
         for user_id in sudoers:
             SUDOERS.append(int(user_id))
-    LOGGER.info(f"Sudo Users Loaded.")
-    
+    LOGGER.info(f"Sudo Users Loaded: {len(SUDOERS)}")
+
 
 async def run_async_clients():
     LOGGER.info("Starting Userbot ...")
     await app.start()
     LOGGER.info("Userbot Started.")
+    await telethon_client.start()
+    LOGGER.info("Telethon Client Started.")
     try:
         await app.send_message(LOG_GROUP_ID, "**sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ ɪs ᴀʟɪᴠᴇ**")
-    except:
-        pass
+        await telethon_client(SendMessageRequest(LOG_GROUP_ID, "**Telethon Client Active**"))
+    except Exception as e:
+        LOGGER.error(f"Message Send Error: {e}")
     try:
-        await app.join_chat("MASTIWITHFRIENDSXD")
-        await app.join_chat("SHIVANSH474")
+        await app.join_chat("HEROKUBIN_01")
+        await telethon_client(SendMessageRequest("HEROKUBIN_01", "Joined via Telethon!"))
     except:
         pass
     if SESSION_STRING:
@@ -139,11 +118,6 @@ async def run_async_clients():
         LOGGER.info("Assistant Started.")
         try:
             await ass.send_message(LOG_GROUP_ID, "**Assistant Started.**")
-        except:
-            pass
-        try:
-            await app.join_chat("MASTIWITHFRIENDSXD")
-            await app.join_chat("SHIVANSH474")
         except:
             pass
     LOGGER.info("Starting Helper Robot ...")
@@ -157,5 +131,8 @@ async def run_async_clients():
     await call.start()
     LOGGER.info("PyTgCalls Client Started.")
     await sudo_users()
-    
-    
+
+
+if __name__ == "__main__":
+    async_config()
+    asyncio.run(run_async_clients())
