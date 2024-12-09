@@ -1,5 +1,4 @@
 import re
-
 from pyrogram import *
 from pyrogram.types import *
 
@@ -13,73 +12,66 @@ from ...modules.helpers.wrapper import *
 @app.on_message(cdx(["help"]))
 @sudo_users_only
 async def inline_help_menu(client, message):
-    image = None
     try:
-        if image:
-            bot_results = await app.get_inline_bot_results(
-                f"@{bot.me.username}", "help_menu_logo"
-            )
-        else:
-            bot_results = await app.get_inline_bot_results(
-                f"@{bot.me.username}", "help_menu_text"
-            )
-        await app.send_inline_bot_result(
-            chat_id=message.chat.id,
-            query_id=bot_results.query_id,
-            result_id=bot_results.results[0].id,
-        )
-    except Exception:
+        # Check if an image is provided or use text-based results
         bot_results = await app.get_inline_bot_results(
-            f"@{bot.me.username}", "help_menu_text"
+            f"@{bot.me.username}", 
+            "help_menu_logo" if image else "help_menu_text"
         )
+        # Send the inline bot result
         await app.send_inline_bot_result(
             chat_id=message.chat.id,
             query_id=bot_results.query_id,
             result_id=bot_results.results[0].id,
         )
     except Exception as e:
-        print(e)
-        return
-
-    try:
-        await message.delete()
-    except:
-        pass
-      
+        print(f"Error fetching inline bot results: {e}")
+        # Fallback to text-based help menu
+        try:
+            bot_results = await app.get_inline_bot_results(
+                f"@{bot.me.username}", "help_menu_text"
+            )
+            await app.send_inline_bot_result(
+                chat_id=message.chat.id,
+                query_id=bot_results.query_id,
+                result_id=bot_results.results[0].id,
+            )
+        except Exception as fallback_error:
+            print(f"Fallback error: {fallback_error}")
+    finally:
+        # Try deleting the original message for cleanup
+        try:
+            await message.delete()
+        except Exception as del_error:
+            print(f"Error deleting message: {del_error}")
 
 
 @bot.on_callback_query(filters.regex(r"help_(.*?)"))
 @cb_wrapper
 async def help_button(client, query):
-    plug_match = re.match(r"help_plugin\((.+?)\)", query.data)
-    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
-    next_match = re.match(r"help_next\((.+?)\)", query.data)
+    plug_match = re.match(r"help_plugin(.+?)", query.data)
+    prev_match = re.match(r"help_prev(.+?)", query.data)
+    next_match = re.match(r"help_next(.+?)", query.data)
     back_match = re.match(r"help_back", query.data)
-    top_text = f"""
-**💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏᴘ.
-sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ  » {__version__} ✨
- 
-❤️ᴄʟɪᴄᴋ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴs ᴛᴏ
-ɢᴇᴛ ᴜsᴇʀʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs ❤️.
- 
-🌹ᴘᴏᴡᴇʀᴇᴅ ʙʏ ♡  [ ᴜᴘᴅᴀᴛᴇ ](https://t.me/SHIVANSH474) 🌹**
-"""
     
+    top_text = f"""
+**💫 Welcome to the Help Menu Op.  
+Shukla UserBot » {__version__} ✨  
+
+❤️ Click on the buttons below to get UserBot commands ❤️.  
+
+🌹 Powered by ♡  [ Update ](https://t.me/SHIVANSH474) 🌹**
+"""
+
     if plug_match:
         plugin = plug_match.group(1)
         text = (
-            "****💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏғ \n💕 ᴘʟᴜɢɪɴ ✨ ** {}\n".format(
-                plugs[plugin].__NAME__
-            )
+            f"💫 Welcome to the Help Menu of \n💕 Plugin ✨ ** {plugs[plugin].__NAME__}**\n"
             + plugs[plugin].__MENU__
         )
         key = InlineKeyboardMarkup(
             [
-                [
-                    InlineKeyboardButton(
-                        text="↪️ Back", callback_data="help_back"
-                    )
-                ],
+                [InlineKeyboardButton("↪️ Back", callback_data="help_back")],
             ]
         )
 
