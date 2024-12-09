@@ -10,6 +10,25 @@ from ...console import API_ID, API_HASH, STRING_SESSION
 from ...console import BOT_TOKEN, SESSION_STRING, LOGGER
 from ...console import MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
 
+#telethone session 
+
+
+from telethon import TelegramClient
+from telethon.tl.custom import Button
+from telethon.tl.types import InputPeerUser
+
+# API credentials from https://my.telegram.org/auth
+api_id = 'YOUR_API_ID'
+api_hash = 'YOUR_API_HASH'
+bot_token = 'YOUR_BOT_TOKEN'
+
+# Create the client and connect
+client = TelegramClient('bot', api_id, api_hash).start(bot_token=bot_token)
+
+client.start()
+client.run_until_disconnected()
+
+#end 
 
 def async_config():
     LOGGER.info("Checking Variables ...")
