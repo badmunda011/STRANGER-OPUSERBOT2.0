@@ -64,10 +64,9 @@ bot = Client(
 
 # Telethon Client Using Pyrogram's SESSION_STRING
 telethon_client = TelegramClient(
-    "TelethonClient",
+    SESSION_STRING,  # Session name or string
     API_ID,
-    API_HASH,
-    session=SESSION_STRING  # Using Pyrogram's session string here
+    API_HASH
 )
 
 call = PyTgCalls(app)
