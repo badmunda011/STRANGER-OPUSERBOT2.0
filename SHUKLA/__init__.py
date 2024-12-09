@@ -42,7 +42,7 @@ from .modules.clients.clients import (
 app = app
 bot = bot
 call = call
-telethon_client = telethon_client
+telethon_client = userbot_session
 
 
 # Command Handlers
