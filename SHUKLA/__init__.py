@@ -37,7 +37,7 @@ mongodb = mongo_async_cli.badmundaxdb
 
 # All Clients
 from .modules.clients.clients import (
-    app, bot, call
+    app, bot, call, telethon_client
 )
 app = app
 bot = bot
