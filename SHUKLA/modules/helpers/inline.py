@@ -7,7 +7,7 @@ from pyrogram.types import *
 
 async def help_menu_logo(answer):
     # Providing a fallback thumbnail image directly
-    thumb_image = "https://files.catbox.moe/r58nec.jpg"
+    thumb_image = "https://files.catbox.moe/83d5lc.jpg"
     
     # Check if `image` exists and assign it
     image = None  # Replace this with logic to fetch `image` dynamically
