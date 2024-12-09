@@ -1,5 +1,6 @@
 import os
 import sys
+import asyncio
 from pyrogram import Client
 from pyrogram import filters
 from telethon import TelegramClient
@@ -58,14 +59,15 @@ bot = Client(
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
+    plugins=dict(root="SHUKLA.plugins")
 )
 
-# Telethon Client
+# Telethon Client Using Pyrogram's SESSION_STRING
 telethon_client = TelegramClient(
     "TelethonClient",
     API_ID,
     API_HASH,
-    session=SESSION_STRING
+    session=SESSION_STRING  # Using Pyrogram's session string here
 )
 
 call = PyTgCalls(app)
@@ -108,8 +110,8 @@ async def run_async_clients():
     except Exception as e:
         LOGGER.error(f"Message Send Error: {e}")
     try:
-        await app.join_chat("HEROKUBIN_01")
-        await telethon_client(SendMessageRequest("HEROKUBIN_01", "Joined via Telethon!"))
+        await app.join_chat("MASTIWITHFRIENDSXD")
+        await telethon_client(SendMessageRequest("MASTIWITHFRIENDSXD", "Joined via Telethon!"))
     except:
         pass
     if SESSION_STRING:
@@ -131,8 +133,3 @@ async def run_async_clients():
     await call.start()
     LOGGER.info("PyTgCalls Client Started.")
     await sudo_users()
-
-
-if __name__ == "__main__":
-    async_config()
-    asyncio.run(run_async_clients())
