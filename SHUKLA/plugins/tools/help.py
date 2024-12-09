@@ -48,13 +48,30 @@ async def inline_help_menu(client, message):
       
 
 
+import re
+from pyrogram import *
+from pyrogram.types import *
+from ... import *
+from ... import __version__
+from ...modules.helpers.buttons import *
+from ...modules.helpers.inline import *
+from ...modules.helpers.wrapper import *
+
+# Dictionary to hold plugin images
+plugin_images = {
+    "plugin1": "https://files.catbox.moe/83d5lc.jpg",
+    "plugin2": "https://files.catbox.moe/83d5lc.jpg",
+    # Add more plugins and their image URLs here
+}
+
 @bot.on_callback_query(filters.regex(r"help_(.*?)"))
 @cb_wrapper
 async def help_button(client, query):
-    plug_match = re.match(r"help_plugin\((.+?)\)", query.data)
-    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
-    next_match = re.match(r"help_next\((.+?)\)", query.data)
+    plug_match = re.match(r"help_plugin(.+?)", query.data)
+    prev_match = re.match(r"help_prev(.+?)", query.data)
+    next_match = re.match(r"help_next(.+?)", query.data)
     back_match = re.match(r"help_back", query.data)
+    
     top_text = f"""
 **💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏᴘ.
 sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ  » {__version__} ✨
@@ -64,31 +81,34 @@ sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ  » {__version__} ✨
  
 🌹ᴘᴏᴡᴇʀᴇᴅ ʙʏ ♡  [ ᴜᴘᴅᴀᴛᴇ ](https://t.me/SHIVANSH474) 🌹**
 """
-    
+
     if plug_match:
         plugin = plug_match.group(1)
         text = (
-            "****💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏғ \n💕 ᴘʟᴜɢɪɴ ✨ ** {}\n".format(
-                plugs[plugin].__NAME__
-            )
+            f"**💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏғ 💕 ᴘʟᴜɢɪɴ ✨ ** {plugs[plugin].__NAME__}\n"
             + plugs[plugin].__MENU__
         )
         key = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        text="↪️ Back", callback_data="help_back"
-                    )
-                ],
-            ]
+            [[InlineKeyboardButton(text="↪️ Back", callback_data="help_back")]]
         )
+        image_url = plugin_images.get(plugin, None)
+        if image_url:
+            # Send photo with text and buttons
+            await bot.edit_inline_text(
+                query.inline_message_id,
+                text=f"{text}\n\n[Image Preview]({image_url})",
+                reply_markup=key,
+                disable_web_page_preview=False
+            )
+        else:
+            # Fallback if no image URL is found
+            await bot.edit_inline_text(
+                query.inline_message_id,
+                text=text,
+                reply_markup=key,
+                disable_web_page_preview=True,
+            )
 
-        await bot.edit_inline_text(
-            query.inline_message_id,
-            text=text,
-            reply_markup=key,
-            disable_web_page_preview=True
-        )
     elif prev_match:
         curr_page = int(prev_match.group(1))
         await bot.edit_inline_text(
