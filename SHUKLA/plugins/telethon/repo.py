@@ -2,7 +2,7 @@ from telethon import TelegramClient, events
 from ... import *
 
 
-@telethon_client.on(events.NewMessage(pattern=r'\.pingg'))  # Trigger for the ".ping" command
+@userbot_session.on(events.NewMessage(pattern=r'\.pingg'))  # Trigger for the ".ping" command
 async def ping(event):
     """
     Responds to the .ping command with 'Pong!' and latency.
