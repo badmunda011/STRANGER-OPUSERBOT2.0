@@ -1,4 +1,3 @@
-import re
 from pyrogram import *
 from pyrogram.types import *
 
@@ -12,34 +11,48 @@ from ...modules.helpers.wrapper import *
 @app.on_message(cdx(["help"]))
 @sudo_users_only
 async def inline_help_menu(client, message):
+    # Set image URL or file path
+    image_url = "https://files.catbox.moe/83d5lc.jpg"  # Replace with your image URL or local path
+    
     try:
-        # Check if an image is provided or use text-based results
-        bot_results = await app.get_inline_bot_results(
-            f"@{bot.me.username}", 
-            "help_menu_logo" if image else "help_menu_text"
-        )
-        # Send the inline bot result
-        await app.send_inline_bot_result(
-            chat_id=message.chat.id,
-            query_id=bot_results.query_id,
-            result_id=bot_results.results[0].id,
-        )
-    except Exception as e:
-        print(f"Error fetching inline bot results: {e}")
-        # Fallback to text-based help menu
-        try:
-            bot_results = await app.get_inline_bot_results(
-                f"@{bot.me.username}", "help_menu_text"
-            )
-            await app.send_inline_bot_result(
+        # Send a photo along with help menu buttons
+        if image_url:
+            await client.send_photo(
                 chat_id=message.chat.id,
-                query_id=bot_results.query_id,
-                result_id=bot_results.results[0].id,
+                photo=image_url,
+                caption=f"""
+**💫 Welcome to the Help Menu Op.  
+Shukla UserBot » {__version__} ✨  
+
+❤️ Click on the buttons below to get UserBot commands ❤️.  
+
+🌹 Powered by ♡  [ Update ](https://t.me/SHIVANSH474) 🌹**
+""",
+                reply_markup=InlineKeyboardMarkup(
+                    paginate_plugins(0, plugs, "help")  # Pagination for help buttons
+                ),
             )
-        except Exception as fallback_error:
-            print(f"Fallback error: {fallback_error}")
+        else:
+            # Fallback to text-only help menu if image isn't set
+            await client.send_message(
+                chat_id=message.chat.id,
+                text=f"""
+**💫 Welcome to the Help Menu Op.  
+Shukla UserBot » {__version__} ✨  
+
+❤️ Click on the buttons below to get UserBot commands ❤️.  
+
+🌹 Powered by ♡  [ Update ](https://t.me/SHIVANSH474) 🌹**
+""",
+                reply_markup=InlineKeyboardMarkup(
+                    paginate_plugins(0, plugs, "help")
+                ),
+            )
+    except Exception as e:
+        print(f"Error fetching help menu: {e}")
+
     finally:
-        # Try deleting the original message for cleanup
+        # Cleanup the user's command message
         try:
             await message.delete()
         except Exception as del_error:
