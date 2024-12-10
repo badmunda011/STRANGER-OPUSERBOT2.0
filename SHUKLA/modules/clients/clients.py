@@ -2,18 +2,15 @@ import os
 import sys
 import asyncio
 from pyrogram import Client
-from pyrogram import filters
 from telethon import TelegramClient
 from telethon.tl.functions.messages import SendMessageRequest
-from pytgcalls import PyTgCalls, filters as pytgfl
-from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
+from pytgcalls import PyTgCalls
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from ...console import (
     API_ID, API_HASH, STRING_SESSION, BOT_TOKEN, SESSION_STRING, LOGGER,
     MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
 )
-
 
 def async_config():
     LOGGER.info("Checking Variables ...")
@@ -24,7 +21,6 @@ def async_config():
         LOGGER.info(f"Missing required variables: {', '.join(missing)}")
         sys.exit()
     LOGGER.info("All Required Variables Collected.")
-
 
 def async_dirs():
     LOGGER.info("Initializing Directories ...")
@@ -62,15 +58,14 @@ bot = Client(
     plugins=dict(root="SHUKLA.plugins")
 )
 
-# Telethon Client Using Pyrogram's SESSION_STRING
+# Telethon Userbot Session Initialization
 telethon_client = TelegramClient(
-    SESSION_STRING,  # Session name or string
-    API_ID,
-    API_HASH
+    session=STRING_SESSION,  # Using the STRING_SESSION for the userbot
+    api_id=API_ID,
+    api_hash=API_HASH
 )
 
 call = PyTgCalls(app)
-
 
 def mongodbase():
     global mongodb
@@ -86,7 +81,6 @@ def mongodbase():
 
 mongodbase()
 
-
 async def sudo_users():
     sudoersdb = mongodb.sudoers
     sudoers = await sudoersdb.find_one({"sudo": "sudo"})
@@ -96,18 +90,20 @@ async def sudo_users():
             SUDOERS.append(int(user_id))
     LOGGER.info(f"Sudo Users Loaded: {len(SUDOERS)}")
 
-
 async def run_async_clients():
     LOGGER.info("Starting Userbot ...")
     await app.start()
-    LOGGER.info("Userbot Started.")
-    await telethon_client.start()
-    LOGGER.info("Telethon Client Started.")
+    LOGGER.info("Pyrogram Userbot Started.")
+    try:
+        await telethon_client.start()
+        LOGGER.info("Telethon Userbot Started.")
+        await telethon_client(SendMessageRequest(LOG_GROUP_ID, "**Telethon Userbot is Active.**"))
+    except Exception as e:
+        LOGGER.error(f"Telethon Userbot Error: {e}")
     try:
         await app.send_message(LOG_GROUP_ID, "**sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ ɪs ᴀʟɪᴠᴇ**")
-        await telethon_client(SendMessageRequest(LOG_GROUP_ID, "**Telethon Client Active**"))
     except Exception as e:
-        LOGGER.error(f"Message Send Error: {e}")
+        LOGGER.error(f"Pyrogram Message Send Error: {e}")
     try:
         await app.join_chat("MASTIWITHFRIENDSXD")
         await telethon_client(SendMessageRequest("MASTIWITHFRIENDSXD", "Joined via Telethon!"))
