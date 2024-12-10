@@ -1,27 +1,14 @@
-import os
-import sys
+import os, sys
 
 from pyrogram import Client
 from pyrogram import filters
 from pytgcalls import PyTgCalls, filters as pytgfl
 from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 from motor.motor_asyncio import AsyncIOMotorClient
-from telethon import TelegramClient
 
-from ...console import (
-    API_ID,
-    API_HASH,
-    STRING_SESSION,
-    BOT_TOKEN,
-    SESSION_STRING,
-    LOGGER,
-    MONGO_DB_URL,
-    LOG_GROUP_ID,
-    SUDOERS,
-)
-
-# Telethon Client Initialization
-telethon_client = TelegramClient("telethon_session", API_ID, API_HASH)
+from ...console import API_ID, API_HASH, STRING_SESSION
+from ...console import BOT_TOKEN, SESSION_STRING, LOGGER
+from ...console import MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
 
 
 def async_config():
@@ -62,28 +49,28 @@ def async_dirs():
             os.remove(file)
     LOGGER.info("Directories Initialized.")
 
-
 async_dirs()
     
+
 app = Client(
-    name="SHUKLA",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    session_string=STRING_SESSION,
+    name = "SHUKLA",
+    api_id = API_ID,
+    api_hash = API_HASH,
+    session_string = STRING_SESSION,
 )
 
 ass = Client(
-    name="ShuklaPlayer",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    session_string=SESSION_STRING,
+    name = "ShuklaPlayer",
+    api_id = API_ID,
+    api_hash = API_HASH,
+    session_string = SESSION_STRING,
 )
 
 bot = Client(
-    name="ShuklaSUPPORT",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN,
+    name = "ShuklaSUPPORT",
+    api_id = API_ID,
+    api_hash = API_HASH,
+    bot_token = BOT_TOKEN,
 )
 
 call = PyTgCalls(app)
@@ -96,11 +83,10 @@ def mongodbase():
         async_client = AsyncIOMotorClient
         mongobase = async_client(MONGO_DB_URL)
         mongodb = mongobase.SHUKLA
-        LOGGER.info("Connected To Your Database.")
-    except Exception as e:
-        LOGGER.error(f"Failed To Connect: {e}")
+        LOGGER.info("Conected To Your Database.")
+    except:
+        LOGGER.error("Failed To Connect, Please Change Your Mongo Database !")
         sys.exit()
-
 
 mongodbase()
 
@@ -113,7 +99,7 @@ async def sudo_users():
         for user_id in sudoers:
             SUDOERS.append(int(user_id))
     LOGGER.info(f"Sudo Users Loaded.")
-
+    
 
 async def run_async_clients():
     LOGGER.info("Starting Userbot ...")
@@ -151,11 +137,6 @@ async def run_async_clients():
     LOGGER.info("Starting PyTgCalls Client...")
     await call.start()
     LOGGER.info("PyTgCalls Client Started.")
-
-    # Start Telethon Client
-    LOGGER.info("Starting Telethon Client...")
-    await telethon_client.start()
-    LOGGER.info("Telethon Client Started.")
-    
     await sudo_users()
-
+    
+    
