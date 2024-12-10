@@ -37,12 +37,11 @@ mongodb = mongo_async_cli.badmundaxdb
 
 # All Clients
 from .modules.clients.clients import (
-    app, bot, call, telethon_client
+    app, bot, call
 )
 app = app
 bot = bot
 call = call
-telethon_client = telethon_client
 
 
 # Command Handlers
