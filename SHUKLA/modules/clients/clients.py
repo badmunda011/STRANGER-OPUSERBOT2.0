@@ -60,7 +60,7 @@ bot = Client(
 
 # Telethon Userbot Session Initialization
 telethon_client = TelegramClient(
-    session=STRING_SESSION,  # Using the STRING_SESSION for the userbot
+    session=SESSION_STRING,  # Using the STRING_SESSION for the userbot
     api_id=API_ID,
     api_hash=API_HASH
 )
