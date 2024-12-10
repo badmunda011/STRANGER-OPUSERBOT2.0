@@ -1,76 +1,94 @@
 import os
 import sys
-import asyncio
+
 from pyrogram import Client
 from pyrogram import filters
-from telethon import TelegramClient
-from telethon.tl.functions.messages import SendMessageRequest
 from pytgcalls import PyTgCalls, filters as pytgfl
 from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 from motor.motor_asyncio import AsyncIOMotorClient
+from telethon import TelegramClient
 
 from ...console import (
-    API_ID, API_HASH, BOT_TOKEN, STRING_SESSION, LOGGER,
-    MONGO_DB_URL, LOG_GROUP_ID, SUDOERS
+    API_ID,
+    API_HASH,
+    STRING_SESSION,
+    BOT_TOKEN,
+    SESSION_STRING,
+    LOGGER,
+    MONGO_DB_URL,
+    LOG_GROUP_ID,
+    SUDOERS,
 )
 
-# Async configuration function to check required variables
+# Telethon Client Initialization
+telethon_client = TelegramClient("telethon_session", API_ID, API_HASH)
+
+
 def async_config():
     LOGGER.info("Checking Variables ...")
-    required_vars = [API_ID, API_HASH, BOT_TOKEN, MONGO_DB_URL, LOG_GROUP_ID]
-    if not all(required_vars):
-        missing = [var for var in ["API_ID", "API_HASH", "BOT_TOKEN", "MONGO_DB_URL", "LOG_GROUP_ID"] 
-                   if not eval(var)]
-        LOGGER.info(f"Missing required variables: {', '.join(missing)}")
+    if not API_ID:
+        LOGGER.info("'API_ID' - Not Found !")
+        sys.exit()
+    if not API_HASH:
+        LOGGER.info("'API_HASH' - Not Found !")
+        sys.exit()
+    if not BOT_TOKEN:
+        LOGGER.info("'BOT_TOKEN' - Not Found !")
+        sys.exit()
+    if not STRING_SESSION:
+        LOGGER.info("'STRING_SESSION' - Not Found !")
+        sys.exit()
+    if not MONGO_DB_URL:
+        LOGGER.info("'MONGO_DB_URL' - Not Found !")
+        sys.exit()
+    if not LOG_GROUP_ID:
+        LOGGER.info("'LOG_GROUP_ID' - Not Found !")
         sys.exit()
     LOGGER.info("All Required Variables Collected.")
 
-# Directory initialization function
+
 def async_dirs():
     LOGGER.info("Initializing Directories ...")
-    for folder in ["downloads", "cache"]:
-        if folder not in os.listdir():
-            os.mkdir(folder)
+    if "downloads" not in os.listdir():
+        os.mkdir("downloads")
+    if "cache" not in os.listdir():
+        os.mkdir("cache")
+    
     for file in os.listdir():
-        if file.endswith((".session", ".session-journal")):
+        if file.endswith(".session"):
+            os.remove(file)
+    for file in os.listdir():
+        if file.endswith(".session-journal"):
             os.remove(file)
     LOGGER.info("Directories Initialized.")
 
-# Initializing directories
-async_dirs()
 
-# Pyrogram Client Instances
+async_dirs()
+    
 app = Client(
-    name="Assistant",
+    name="SHUKLA",
     api_id=API_ID,
     api_hash=API_HASH,
-    session_string=STRING_SESSION,  # Use same session for Userbot
-    plugins=dict(root="SHUKLA.plugins")
+    session_string=STRING_SESSION,
 )
 
-# Helper Bot Client for Pyrogram
+ass = Client(
+    name="ShuklaPlayer",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    session_string=SESSION_STRING,
+)
+
 bot = Client(
-    name="Bot",
+    name="ShuklaSUPPORT",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    plugins=dict(root="SHUKLA.plugins")
 )
 
-# Telethon Client using the Pyrogram string session
-telethon_client = TelegramClient(
-    "userbot_session",  # Use a session file name for Telethon
-    API_ID,
-    API_HASH
-)
-
-# Override the Telethon client session to use Pyrogram's string session
-telethon_client.session = telethon_client.session.from_string(STRING_SESSION)
-
-# PyTgCalls instance
 call = PyTgCalls(app)
 
-# MongoDB connection function
+
 def mongodbase():
     global mongodb
     try:
@@ -80,13 +98,13 @@ def mongodbase():
         mongodb = mongobase.SHUKLA
         LOGGER.info("Connected To Your Database.")
     except Exception as e:
-        LOGGER.error(f"Failed To Connect, Error: {e}")
+        LOGGER.error(f"Failed To Connect: {e}")
         sys.exit()
 
-# Initialize database
+
 mongodbase()
 
-# Load sudo users from the database
+
 async def sudo_users():
     sudoersdb = mongodb.sudoers
     sudoers = await sudoersdb.find_one({"sudo": "sudo"})
@@ -94,33 +112,23 @@ async def sudo_users():
     if sudoers:
         for user_id in sudoers:
             SUDOERS.append(int(user_id))
-    LOGGER.info(f"Sudo Users Loaded: {len(SUDOERS)}")
+    LOGGER.info(f"Sudo Users Loaded.")
 
-# Start the clients and necessary actions
+
 async def run_async_clients():
     LOGGER.info("Starting Userbot ...")
     await app.start()
     LOGGER.info("Userbot Started.")
-    await telethon_client.start()  # This starts the Telethon Userbot
-    LOGGER.info("Telethon Client Started.")
-    
     try:
-        # Send message from Pyrogram
         await app.send_message(LOG_GROUP_ID, "**sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ ɪs ᴀʟɪᴠᴇ**")
-        # Send message from Telethon
-        await telethon_client(SendMessageRequest(LOG_GROUP_ID, "**Telethon Client Active**"))
-    except Exception as e:
-        LOGGER.error(f"Message Send Error: {e}")
-
-    try:
-        # Join group using Pyrogram and Telethon
-        await app.join_chat("MASTIWITHFRIENDSXD")
-        await telethon_client(SendMessageRequest("MASTIWITHFRIENDSXD", "Joined via Telethon!"))
     except:
         pass
-
-    # Starting Assistant (Pyrogram) if SESSION_STRING is provided
-    if STRING_SESSION:
+    try:
+        await app.join_chat("MASTIWITHFRIENDSXD")
+        await app.join_chat("SHIVANSH474")
+    except:
+        pass
+    if SESSION_STRING:
         LOGGER.info("Starting Assistant ...")
         await ass.start()
         LOGGER.info("Assistant Started.")
@@ -128,7 +136,11 @@ async def run_async_clients():
             await ass.send_message(LOG_GROUP_ID, "**Assistant Started.**")
         except:
             pass
-
+        try:
+            await app.join_chat("MASTIWITHFRIENDSXD")
+            await app.join_chat("SHIVANSH474")
+        except:
+            pass
     LOGGER.info("Starting Helper Robot ...")
     await bot.start()
     LOGGER.info("Helper Robot Started.")
@@ -136,11 +148,14 @@ async def run_async_clients():
         await bot.send_message(LOG_GROUP_ID, "**sʜᴜᴋʟᴀ ʀᴏʙᴏᴛ ɪs ᴀʟɪᴠᴇ.**")
     except:
         pass
-    
-    # Start the call client
     LOGGER.info("Starting PyTgCalls Client...")
     await call.start()
     LOGGER.info("PyTgCalls Client Started.")
+
+    # Start Telethon Client
+    LOGGER.info("Starting Telethon Client...")
+    await telethon_client.start()
+    LOGGER.info("Telethon Client Started.")
     
-    # Load sudo users
     await sudo_users()
+
