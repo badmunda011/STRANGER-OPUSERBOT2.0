@@ -1,5 +1,4 @@
 import asyncio
-
 from math import ceil
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton
@@ -45,47 +44,37 @@ def paginate_plugins(page_n, plugin_dict, prefix, chat=None):
             ]
         )
 
-    pairs = list(zip(plugins[::3], plugins[1::3], plugins[2::3]))
-    i = 0
-    for m in pairs:
-        for _ in m:
-            i += 1
-    if len(plugins) - i == 1:
-        pairs.append((plugins[-1],))
-    elif len(plugins) - i == 2:
-        pairs.append(
-            (
-                plugins[-2],
-                plugins[-1],
-            )
-        )
+    # Adjust rows and columns here
+    ROW_SIZE = 5  # Number of rows (Nice)
+    COLUMN_SIZE = 3  # Buttons in one row
 
-    COLUMN_SIZE = 3
+    # Create button pairs with ROW_SIZE and COLUMN_SIZE
+    pairs = [plugins[i:i + COLUMN_SIZE] for i in range(0, len(plugins), COLUMN_SIZE)]
+    pages = [pairs[i:i + ROW_SIZE] for i in range(0, len(pairs), ROW_SIZE)]
 
-    max_num_pages = ceil(len(pairs) / COLUMN_SIZE)
+    max_num_pages = len(pages)
     modulo_page = page_n % max_num_pages
 
-    # can only have a certain amount of buttons side by side
-    if len(pairs) > COLUMN_SIZE:
-        pairs = pairs[
-            modulo_page * COLUMN_SIZE : COLUMN_SIZE * (modulo_page + 1)
-        ] + [
-            (
-                EqInlineKeyboardButton(
-                    "❮",
-                    callback_data="{}_prev({})".format(prefix, modulo_page),
-                ),
-                EqInlineKeyboardButton(
-                    " Oᴡɴᴇʀ ",
-                    url=f"tg://openmessage?user_id={app.me.id}",
-                ),
-                EqInlineKeyboardButton(
-                    "❯",
-                    callback_data="{}_next({})".format(prefix, modulo_page),
-                ),
-            )
-        ]
+    # Add navigation buttons (if necessary)
+    navigation_buttons = [
+        EqInlineKeyboardButton(
+            "❮",
+            callback_data="{}_prev({})".format(prefix, modulo_page),
+        ),
+        EqInlineKeyboardButton(
+            " Oᴡɴᴇʀ ",
+            url=f"tg://openmessage?user_id={app.me.id}",
+        ),
+        EqInlineKeyboardButton(
+            "❯",
+            callback_data="{}_next({})".format(prefix, modulo_page),
+        ),
+    ]
 
-    return pairs
+    # Current page content
+    current_page = pages[modulo_page]
 
+    # Flatten and append navigation buttons
+    final_buttons = [row for row in current_page] + [navigation_buttons]
 
+    return final_buttons
