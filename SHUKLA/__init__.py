@@ -1,4 +1,3 @@
-import time 
 from typing import Union, List, Pattern
 from SHUKLA.console import  SUDO_USERS, OWNER_ID, OWNER_USERNAME
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
@@ -10,11 +9,6 @@ from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 __version__ = "v2.1.0"
 
 spam_chats = []
-# zaid
-StartTime = time.time()
-ids = []
-CMD_HELP = {}
-#zaid
 SUDO_USER = SUDO_USERS
 OWNER_USERNAME = OWNER_USERNAME
 SUDO_USERS.append(OWNER_ID)
