@@ -9,7 +9,10 @@ from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 __version__ = "v2.1.0"
 
 spam_chats = []
+# zaid
 ids = []
+CMD_HELP = {}
+#zaid
 SUDO_USER = SUDO_USERS
 OWNER_USERNAME = OWNER_USERNAME
 SUDO_USERS.append(OWNER_ID)
