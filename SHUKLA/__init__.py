@@ -10,6 +10,7 @@ __version__ = "v2.1.0"
 
 spam_chats = []
 # zaid
+StartTime = time.time()
 ids = []
 CMD_HELP = {}
 #zaid
