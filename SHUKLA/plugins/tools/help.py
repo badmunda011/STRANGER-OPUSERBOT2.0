@@ -51,38 +51,40 @@ async def inline_help_menu(client, message):
 @bot.on_callback_query(filters.regex(r"help_(.*?)"))
 @cb_wrapper
 async def help_button(client, query):
-    plug_match = re.match(r"help_plugin(.+?)", query.data)
-    prev_match = re.match(r"help_prev(.+?)", query.data)
-    next_match = re.match(r"help_next(.+?)", query.data)
+    plug_match = re.match(r"help_plugin\((.+?)\)", query.data)
+    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
+    next_match = re.match(r"help_next\((.+?)\)", query.data)
     back_match = re.match(r"help_back", query.data)
-    
-    image_url = "https://files.catbox.moe/83d5lc.jpg"
-    
     top_text = f"""
-**💫 Welcome to the Help Menu Op.  
-Shukla UserBot » {__version__} ✨  
-
-❤️ Click on the buttons below to get UserBot commands ❤️.  
-
-🌹 Powered by ♡  [ Update ](https://t.me/SHIVANSH474) 🌹**
+**💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏᴘ.
+sʜᴜᴋʟᴀ ᴜsᴇʀʙᴏᴛ  » {__version__} ✨
+ 
+❤️ᴄʟɪᴄᴋ ᴏɴ ʙᴇʟᴏᴡ ʙᴜᴛᴛᴏɴs ᴛᴏ
+ɢᴇᴛ ᴜsᴇʀʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs ❤️.
+ 
+🌹ᴘᴏᴡᴇʀᴇᴅ ʙʏ ♡  [ ᴜᴘᴅᴀᴛᴇ ](https://t.me/SHIVANSH474) 🌹**
 """
-
+    
     if plug_match:
         plugin = plug_match.group(1)
         text = (
-            f"💫 Welcome to the Help Menu of \n💕 Plugin ✨ ** {plugs[plugin].__NAME__}**\n"
+            "****💫 ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ʜᴇʟᴘ ᴍᴇɴᴜ ᴏғ \n💕 ᴘʟᴜɢɪɴ ✨ ** {}\n".format(
+                plugs[plugin].__NAME__
+            )
             + plugs[plugin].__MENU__
         )
         key = InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("↪️ Back", callback_data="help_back")],
+                [
+                    InlineKeyboardButton(
+                        text="↪️ Back", callback_data="help_back"
+                    )
+                ],
             ]
         )
 
         await bot.edit_inline_text(
-            client.send_photo,
             query.inline_message_id,
-            photo=image_url,
             text=text,
             reply_markup=key,
             disable_web_page_preview=True
@@ -90,9 +92,7 @@ Shukla UserBot » {__version__} ✨
     elif prev_match:
         curr_page = int(prev_match.group(1))
         await bot.edit_inline_text(
-            client.send_photo,
             query.inline_message_id,
-            photo=image_url,
             text=top_text,
             reply_markup=InlineKeyboardMarkup(
                 paginate_plugins(curr_page - 1, plugs, "help")
@@ -103,9 +103,7 @@ Shukla UserBot » {__version__} ✨
     elif next_match:
         next_page = int(next_match.group(1))
         await bot.edit_inline_text(
-            client.send_photo,
             query.inline_message_id,
-            photo=image_url,
             text=top_text,
             reply_markup=InlineKeyboardMarkup(
                 paginate_plugins(next_page + 1, plugs, "help")
@@ -115,9 +113,7 @@ Shukla UserBot » {__version__} ✨
 
     elif back_match:
         await bot.edit_inline_text(
-            client.send_photo,
             query.inline_message_id,
-            photo=image_url,
             text=top_text,
             reply_markup=InlineKeyboardMarkup(
                 paginate_plugins(0, plugs, "help")
