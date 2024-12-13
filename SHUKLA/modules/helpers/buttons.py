@@ -4,8 +4,7 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton
 from typing import Union, List
 
-from ..clients.clients import app
-
+from BADUC.core.clients import app
 
 class EqInlineKeyboardButton(InlineKeyboardButton):
     def __eq__(self, other):
